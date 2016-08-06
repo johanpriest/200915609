@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1470360416 source:c:\users\gjoan\onedrive\documentos\proyectof1\main.c
+	<stdio.h>
+	<stdlib.h>
+	"Lexico.h"
+
+1470362277 c:\users\gjoan\onedrive\documentos\proyectof1\lexico.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+	<string.h>
+
