@@ -3,8 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>
+#include <fcntl.h>
 #include <string.h>
+#include <sys/stat.h>
+ #include <sys/types.h>
+//#include "fdisk.h"
 
 typedef struct _nodo {
    char*  parametro;
@@ -29,31 +32,38 @@ strcpy(cadena,comando);
    pNodo p;
 char *q;
 q =strtok(cadena," ");
+char *com=q;
 
+if(strcasecmp(com,"mkdisk")==0){
+        while(q!=NULL){
+            Insertar(&lista, q);
+            q=strtok(NULL," ");
+
+
+            }
+ MostrarLista(lista);
+
+
+}else if(strcasecmp(com,"rmdisk")==0){
+ while(q!=NULL){
+            Insertar(&lista, q);
+            q=strtok(NULL,"");
+
+
+            }
+EliminarArchivo(lista);
+
+}else if(strcasecmp(com,"fdisk")==0){
 while(q!=NULL){
-//printf("%s",q);
 
-Insertar(&lista, q);
+Insertar(&lista,q);
 q=strtok(NULL," ");
 
+}
+instrucciones(lista);
 
 }
-MostrarLista(lista);
-/*
-    char* OutputFolder = "C:\\test";
-if (CreateDirectory(OutputFolder, NULL) || ERROR_ALREADY_EXISTS == GetLastError())
 
-{
-   char* OutputFolder1 = "C:\\test\\test2";
-    CreateDirectory(OutputFolder1, NULL);
-}
-else
-{
-     // Failed to create directory.
-}
-
-
-*/
 }
 
 
@@ -99,7 +109,8 @@ typedef struct mkdisk MKDISK;
 void MostrarLista(Lista lista) {
    pNodo nodo = lista;
    MKDISK disk;
-   if(ListaVacia(lista)) printf("Lista vacía\n");
+   disk.unidad="M";
+   if(ListaVacia(lista)) printf("No se Ingreso Ningun Comando!!\n");
    else {
       while(nodo) {
 
@@ -111,37 +122,167 @@ void MostrarLista(Lista lista) {
                 p =strtok(NULL,"::");
                 int j=atoi(p);
                 disk.tamano=j;
-
-
             }else if(strcasecmp(q,"+unit")==0){
                 p =strtok(NULL,"::");
                 disk.unidad=p;
             }else if(strcasecmp(q,"-path")==0){
                 p =strtok(NULL,"::");
-                disk.direccion=p;
+                char *dir=strtok(p,"\"");
+                disk.direccion=dir;
             }else if(strcasecmp(q,"-name")==0){
                 p =strtok(NULL,"::");
-                disk.nombre=p;
+                char *t;
+                t=strtok(p,"\"\"");
+                disk.nombre=t;
 
             }
-
-
 
          nodo = nodo->siguiente;
      }
      printf("%d\n",disk.tamano);
-      printf("%s\n",disk.unidad);
-       printf("%s\n",disk.direccion);
-        printf("%s\n",disk.nombre);
+     printf("%s\n",disk.unidad);
+     printf("%s\n",disk.direccion);
+     printf("%s\n",disk.nombre);
+    printf("\n");
 
-
-
-     printf("\n");
+    CrearDisco(disk.nombre,disk.tamano,disk.unidad,disk.direccion);
    }
+   ListaVacia(lista);
 }
 
 int ListaVacia(Lista lista) {
    return (lista == NULL);
 }
+
+//Creacion de disco sung el tamaña  dado
+struct datos{
+char nombre[1];
+
+
+};
+
+typedef struct datos DATO;
+
+
+
+
+void CrearDisco(char *nombre,int tamano,char *unidad, char *direccion){
+
+ //creacion del path del archivo
+
+ char *directorio=strtok(direccion,"/");
+ char resultado[512];
+
+
+
+
+
+char direc[256];
+strcpy(direc,"/home/gary7559/Documentos/ProyectoF1");
+
+while(directorio!=NULL){
+
+ strcat(direc,"/");
+ strcat(direc,directorio);
+ int fd2 = mkdir(direc, 0777); // Originally 777 (see comments)
+
+if (fd2 != -1) {
+    // use file descriptor
+    close(fd2);
+}
+directorio=strtok(NULL,"/");
+}
+
+
+
+strcat(direc,"/");
+strcat(direc,nombre);
+
+
+FILE *fich;
+DATO e;
+strcpy(e.nombre,"0");
+//strcat(resultado,nombre);
+if((fich=fopen(direc,"w+b"))==NULL){
+
+  printf("FICHERO NO EXISTE!!");
+  }else{
+      if(strcasecmp(unidad,"k")==0){
+          int i=0;
+
+        for(i=0;i<tamano*1024;i++){
+
+           fwrite(&e,sizeof(e),1,fich);
+
+        }
+            fclose(fich);
+      }else if(strcasecmp(unidad,"m")==0){
+              int i=0;
+              int kb=tamano*1024;
+              char buffer1[] = {'\0'};
+         fwrite (buffer1 , sizeof(char), sizeof(buffer1), fich);
+        for(i=0;i<kb*1024;i++){
+
+            fwrite(&e,sizeof(e),1,fich);
+
+        }
+            fclose(fich);
+
+      }else{
+      printf("ERROR NO SE RECONOCIO EL TAMAÑO DE LA UNIDAD A CREA",163);
+
+      }
+
+  }
+
+}
+
+void EliminarArchivo(Lista lista){
+  pNodo nodo = lista;
+   MKDISK disk;
+    char resultado[1024];
+   if(ListaVacia(lista)) printf("Lista vacía\n");
+   else {
+      while(nodo) {
+
+            char *q;
+            q =strtok(nodo->parametro,"::");
+            char *p;
+
+            if(strcasecmp(q,"-path")==0){
+                p =strtok(NULL,"::");
+                char *di=strtok(p,"\"\"");
+  char *directorio=strtok(di,"/");
+char* OutputFolder1=directorio;
+strcpy(resultado,OutputFolder1);
+directorio=strtok(NULL,"/");
+     while(directorio!=NULL){
+            strcat(resultado,"/");
+            strcat(resultado,directorio);
+            directorio=strtok(NULL,"/");
+
+
+
+    }
+            }
+
+         nodo = nodo->siguiente;
+     }
+
+
+
+
+
+   if( remove(resultado) != 0 ) {
+            printf( "\nNo Se pudo Borrar\n" );
+   }else{
+        printf( "\nBorrado\n" );
+      }
+
+   }
+   ListaVacia(lista);
+
+}
+
 
 #endif // LEXICO_H_INCLUDED

@@ -1,13 +1,35 @@
 # depslib dependency file v1.0
-1470360416 source:c:\users\gjoan\onedrive\documentos\proyectof1\main.c
+1470451236 source:c:\users\gjoan\onedrive\documentos\proyectof1\main.c
 	<stdio.h>
 	<stdlib.h>
 	"Lexico.h"
 
-1470362277 c:\users\gjoan\onedrive\documentos\proyectof1\lexico.h
+1470629328 
+
+1470629328 c:\users\gjoan\onedrive\documentos\proyectof1\lexico.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<windows.h>
 	<string.h>
+
+1470944379 source:/home/gary7559/Documentos/ProyectoF1/main.c
+	<stdio.h>
+	<stdlib.h>
+	"fdisk.h"
+	<fcntl.h>
+
+1470999309 /home/gary7559/Documentos/ProyectoF1/Lexico.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<fcntl.h>
+	<string.h>
+	<sys/stat.h>
+	<sys/types.h>
+
+1471007246 /home/gary7559/Documentos/ProyectoF1/fdisk.h
+	<stdio.h>
+	<stdlib.h>
+	"Lexico.h"
 
